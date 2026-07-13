@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>臺北科技大學證照資料登錄系統</title>
+  <style>
+    :root {
+      --primary: #143b6f;
+      --primary-light: #eaf1fb;
+      --accent: #f2a23a;
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #243044;
+      --muted: #6b7280;
+      --border: #d9e2ef;
+      --danger: #c2410c;
+      --success: #15803d;
+      --shadow: 0 12px 30px rgba(20, 59, 111, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: linear-gradient(180deg, #eef4fb 0%, var(--bg) 45%, #ffffff 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .cert-page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 18px 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #143b6f 0%, #1f5b99 70%, #2e73b8 100%);
+      color: #fff;
+      border-radius: 28px;
+      padding: 34px 32px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -70px;
+      top: -80px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      letter-spacing: 0.04em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      opacity: 0.96;
+      font-size: 16px;
+    }
+
+    .notice {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 20px 0 26px;
+    }
+
+    .notice-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: 0 8px 20px rgba(20, 59, 111, 0.05);
+    }
+
+    .notice-item strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 26px;
+      margin-top: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 22px;
+      color: var(--primary);
+    }
+
+    .section-desc {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .step-badge {
+      flex: 0 0 auto;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 700;
+      color: #26364d;
+      font-size: 15px;
+    }
+
+    .required::after {
+      content: " *";
+      color: var(--danger);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: 0.18s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2e73b8;
+      box-shadow: 0 0 0 4px rgba(46, 115, 184, 0.12);
+    }
+
+    input[readonly] {
+      background: #f8fafc;
+      color: #4b5563;
+    }
+
+    .help-text {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .student-query {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #0f2f5b;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: #dceafa;
+    }
+
+    .btn-danger {
+      background: #fff1eb;
+      color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #ffe3d5;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .auto-info {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .info-pill {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .info-pill span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .info-pill strong {
+      display: block;
+      color: var(--primary);
+      font-size: 16px;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .message {
+      display: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-weight: 700;
+    }
+
+    .message.success {
+      background: #eefbf2;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      background: #fff4ed;
+      color: var(--danger);
+      border: 1px solid #fed7aa;
+    }
+
+    .license-card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      border-radius: 22px;
+      padding: 20px;
+      margin-top: 16px;
+      position: relative;
+    }
+
+    .license-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .license-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .file-note {
+      border: 1px dashed #9fb7d7;
+      background: #f8fbff;
+      color: #47617f;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .preview-box {
+      display: none;
+      background: #fbfdff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 18px;
+    }
+
+    .preview-title {
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      margin: 12px 0 18px;
+    }
+
+    .summary-table th,
+    .summary-table td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .summary-table th {
+      width: 160px;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .cert-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .cert-preview-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #fff;
+    }
+
+    .cert-preview-item strong {
+      color: var(--primary);
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 820px) {
+
+      .notice,
+      .grid,
+      .grid-3,
+      .auto-info {
+        grid-template-columns: 1fr;
+      }
+
+      .student-query {
+        grid-template-columns: 1fr;
+      }
+
+      .section-card {
+        padding: 20px;
+      }
+
+      .hero {
+        padding: 28px 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="cert-page">
+    <section class="hero">
+      <h1>證照資料登錄系統</h1>
+      <p>請先輸入學號，系統將自動帶入系所、班級與學校 Email。每位學生可登錄多張證照，請確認資料正確後再送出。</p>
+    </section>
+
+    <section class="notice" aria-label="登錄提醒">
+      <div class="notice-item">
+        <strong>登錄期間</strong>
+        114/08/01 至 115/01/31
+      </div>
+      <div class="notice-item">
+        <strong>上傳格式</strong>
+        PDF、JPG、PNG，單檔建議 1MB 以內
+      </div>
+      <div class="notice-item">
+        <strong>資料確認</strong>
+        送出後將寄送確認信至學校信箱
+      </div>
+    </section>
+
+    <form id="certificateForm" novalidate>
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">學生資料查詢</h2>
+            <p class="section-desc">請輸入學號，系統會依學號解析入學學年度、系所組代碼與 Email；學制請於下方自行選擇。</p>
+          </div>
+          <span class="step-badge">Step 1</span>
+        </div>
+
+        <div class="student-query">
+          <div class="form-group">
+            <label for="studentId" class="required">學號</label>
+            <input id="studentId" name="studentId" type="text" placeholder="例：111360000" maxlength="12" required />
+            <span class="help-text">學號格式：第1–3碼為入學學年度，第4–6碼為系所組代碼，第7–9碼為流水號；系所組代碼可能含英文字母。</span>
+          </div>
+          <button class="btn btn-primary" type="button" id="queryStudentBtn">查詢學生資料</button>
+        </div>
+
+        <div id="queryMessage" class="message"></div>
+
+        <div id="autoInfo" class="auto-info">
+          <div class="info-pill">
+            <span>系所</span>
+            <strong id="departmentText">—</strong>
+          </div>
+          <div class="info-pill">
+            <span>入學學年度／年級推估</span>
+            <strong id="classText">—</strong>
+          </div>
+          <div class="info-pill">
+            <span>Email</span>
+            <strong id="emailText">—</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">基本資料</h2>
+            <p class="section-desc">以下欄位請依實際情況填寫。</p>
+          </div>
+          <span class="step-badge">Step 2</span>
+        </div>
+
+        <div class="grid">
+          <div class="form-group">
+            <label for="studentName" class="required">姓名</label>
+            <input id="studentName" name="studentName" type="text" required />
+          </div>
+          <div class="form-group">
+            <label for="personalId" class="required">身分證字號／居留證號</label>
+            <input id="personalId" name="personalId" type="text" required />
+          </div>
+          <div class="form-group">
+            <label for="educationLevel" class="required">學制</label>
+            <select id="educationLevel" name="educationLevel" required>
+              <option value="">請選擇</option>
+              <option value="二技">二技</option>
+              <option value="二技進修部">二技進修部</option>
+              <option value="五專(日)">五專(日)</option>
+              <option value="四技(日)">四技(日)</option>
+              <option value="四技進修部">四技進修部</option>
+              <option value="博士班">博士班</option>
+              <option value="進修學院">進修學院</option>
+              <option value="碩士班">碩士班</option>
+              <option value="碩士在職專班">碩士在職專班</option>
+            </select>
+            <span class="help-text">因系所組代碼無法完整判斷學士／碩士／博士，請依實際身分選擇。</span>
+          </div>
+          <div class="form-group">
+            <label for="gender" class="required">性別</label>
+            <select id="gender" name="gender" required>
+              <option value="">請選擇</option>
+              <option value="男">男</option>
+              <option value="女">女</option>
+              <option value="其他／不便提供">其他／不便提供</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="studentType" class="required">身分別</label>
+            <select id="studentType" name="studentType" required>
+              <option value="">請選擇</option>
+              <option value="一般生">一般生</option>
+              <option value="原住民學生">原住民學生</option>
+              <option value="外籍生">外籍生</option>
+              <option value="中低收入戶學生">中低收入戶學生</option>
+              <option value="低收入戶學生">低收入戶學生</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="isGraduating" class="required">是否為應屆畢業生</label>
+            <select id="isGraduating" name="isGraduating" required>
+              <option value="">請選擇</option>
+              <option value="是">是</option>
+              <option value="否">否</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="admissionType" class="required">入學管道</label>
+            <select id="admissionType" name="admissionType" required>
+              <option value="">請選擇</option>
+              <option value="繁星推薦">繁星推薦</option>
+              <option value="申請入學">申請入學</option>
+              <option value="技優甄審">技優甄審</option>
+              <option value="甄選入學">甄選入學</option>
+              <option value="登記分發">登記分發</option>
+              <option value="轉學生">轉學生</option>
+              <option value="碩士班甄試">碩士班甄試</option>
+              <option value="碩士班考試">碩士班考試</option>
+              <option value="博士班">博士班</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">證照資料</h2>
+            <p class="section-desc">請逐張新增證照資料，最多可登錄 8 張。</p>
+          </div>
+          <span class="step-badge">Step 3</span>
+        </div>
+
+        <div id="licenseContainer"></div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary" id="addLicenseBtn">＋新增一張證照</button>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">送出前確認</h2>
+            <p class="section-desc">請先產生預覽並確認資料無誤，再正式送出。</p>
+            <p class="section-desc">如有問題請洽研究發展處 實習就業輔導組 小姐 分機1432 email:</p>
+          </div>
+          <span class="step-badge">Step 4</span>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary" id="previewBtn">產生預覽</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">確認送出</button>
+        </div>
+
+        <div id="previewBox" class="preview-box">
+          <h3 class="preview-title">資料預覽</h3>
+          <div id="previewContent"></div>
+        </div>
+      </section>
+    </form>
+
+    <p class="footer-note">國立臺北科技大學 研究發展處｜證照資料登錄系統</p>
+  </main>
+
+  <template id="licenseTemplate">
+    <div class="license-card" data-license-card>
+      <div class="license-head">
+        <div class="license-title">證照 <span data-license-index></span></div>
+        <button type="button" class="btn btn-danger" data-remove-license>刪除</button>
+      </div>
+
+      <div class="grid">
+        <div class="form-group">
+          <label class="required">證照名稱</label>
+          <input type="text" name="licenseName" required placeholder="例：iPAS 人工智慧應用規劃師" />
+        </div>
+        <div class="form-group">
+          <label class="required">發照單位</label>
+          <input type="text" name="issuer" required placeholder="例：經濟部產業發展署" />
+        </div>
+        <div class="form-group">
+          <label class="required">發證地區</label>
+          <select name="region" required>
+            <option value="">請選擇</option>
+            <option value="國內">國內</option>
+            <option value="國外">國外</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="required">發照日期</label>
+          <input type="date" name="issueDate" min="2026-02-01" max="2026-07-31" required />
+          <span class="help-text">可認列期間：2026/02/01 至 2026/07/31</span>
+        </div>
+        <div class="form-group full">
+          <label class="required">證照檔案</label>
+          <input type="file" name="licenseFile" accept=".pdf,.jpg,.jpeg,.png" required />
+          <div class="file-note">請上傳清晰可辨識之證照檔案，支援 PDF/JPG/PNG。</div>
+        </div>
+        <div class="form-group full">
+          <label>備註</label>
+          <textarea name="note" rows="3" placeholder="若有補充說明可填寫，無則免填。"></textarea>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    // ====== 串接 GAS 時只要調整這裡 ======
+    const CONFIG = {
+      // 之後可改成 GAS 查詢 API，例如：https://script.google.com/macros/s/XXXXX/exec?action=queryStudent
+      studentQueryApiUrl: "",
+      // 之後可改成 GAS 送出 API，例如：https://script.google.com/macros/s/XXXXX/exec
+      submitApiUrl: "https://script.google.com/macros/s/AKfycbwcRUcl26Vqm-Cbx8tzMUCmdJbdxgz2OoTBuGkc1zEtcKLfy4MHgBfp1_VstcMYCpte/exec",
+      maxLicenses: 8,
+      dateMin: "2025-08-01",
+      dateMax: "2026-01-31"
+    };
+
+    // 系所代碼表：請依北科大實際學號中間三碼補齊／修正
+    // 學號規則：第1–3碼＝入學學年度；第4–6碼＝系所組代碼；第7–9碼＝流水號
+    // 注意：系所組代碼可能包含英文字母，例如 AB0、C52。
+    const departmentCodeMap = {
+      "2A0": "五專共同科",
+      "2B0": "智動科",
+      "300": "機械系",
+      "301": "機械系 製造組",
+      "302": "機械系 汽車組",
+      "303": "機械系 設計組",
+      "304": "機械系 控制組",
+      "305": "機械系 精密機電組",
+      "306": "機械系 精密設計組",
+      "307": "機械系 電機與控制組",
+      "30A": "機械系 產學攜手專班",
+      "30B": "機械系 產學訓專班北分",
+      "30C": "機械系 產學訓專班桃分",
+
+      "310": "電機系",
+      "311": "電機系 電力組",
+      "312": "電機系 冷凍組",
+      "313": "電機系 泰山建教班",
+      "314": "電機系 產學攜手專班",
+
+      "320": "化工系",
+      "321": "化工系-企業在職專班",
+
+      "330": "材資系",
+      "331": "材資系 材料組",
+      "332": "材資系 資源組",
+
+      "340": "土木系",
+      "341": "土木系-土木組",
+      "342": "土木系-環工組",
+
+      "350": "分子系",
+      "351": "分子系 紡工組",
+      "352": "分子系 紡化組",
+
+      "360": "電子系",
+      "361": "電子系 產學攜手專班",
+      "362": "電子系 產學訓專班",
+
+      "370": "工管系",
+      "371": "工管系 工程組",
+      "372": "工管系 管理組",
+
+      "380": "工設系",
+      "381": "工設系 產品組",
+      "382": "工設系 家具組",
+      "383": "工設系 家室組",
+
+      "390": "建築系",
+
+      "400": "機電所",
+      "401": "機電所 微機電與控制組",
+      "402": "機電所 機電整合設計組",
+      "403": "機電所 機電研發管理組",
+      "404": "機電所 機電整合技術組",
+      "405": "機電所 機電整合教學班",
+      "406": "機電所 老人醫工組",
+      "407": "機電所 智慧醫療器材組",
+
+      "410": "電通所",
+
+      "420": "防災所",
+      "430": "生管所",
+      "440": "車輛系",
+      "441": "車輛系 產學訓專班",
+      "442": "車輛系 產學攜手專班",
+      "450": "能源冷凍空調系",
+      "451": "能源冷凍空調系 產學訓專班",
+      "452": "能源冷凍空調系 產學攜手專班",
+
+      "460": "電能所",
+      "470": "材資所",
+      "480": "商管所",
+
+      "490": "技職所",
+      "500": "化程所",
+      "510": "高分所",
+      "520": "建都所",
+
+      "530": "光電所",
+      "540": "英文系",
+      "550": "冷凍所",
+
+      "560": "製科所",
+      "570": "經管系",
+      "571": "經管系 企業在職專班",
+
+      "580": "創新所",
+      "590": "資工系",
+
+      "600": "環境所",
+      "608": "環境所",
+      "610": "自動化所",
+
+      "650": "光電系",
+      "660": "機電科所",
+      "670": "工程科所",
+      "680": "生化所",
+
+      "690": "半導體科技學程",
+      "700": "能源科技學程",
+      "710": "製商整合學程",
+      "720": "奈米科技學程",
+
+      "730": "化工所",
+      "740": "管理所",
+      "750": "生物科技學程",
+      "760": "軟工學程",
+
+      "770": "積體電路學程",
+      "780": "材料所",
+      "790": "資源所",
+
+      "800": "土木學程",
+      "810": "機電學士班",
+      "811": "機械系",
+      "812": "車輛系",
+      "813": "能源冷凍空調系",
+      "820": "電資學士班",
+      "821": "電資--電機系",
+      "822": "電資--電子系",
+      "823": "電資--資工系",
+      "824": "電資--光電系",
+      "830": "工程科技學士班",
+      "831": "工程--化工系",
+      "832": "工程--材資系材料組",
+      "833": "工程--材資系資源組",
+      "834": "工程--土木系",
+      "835": "工程--分子系",
+
+      "840": "創意設計學士班",
+      "841": "創意--工設系產品組",
+      "842": "創意--工設系家室組",
+      "843": "創意--建築系",
+      "844": "互動系媒體設計組",
+      "845": "互動系視覺傳達設計組",
+      "850": "設計所",
+      "860": "電資專班",
+      "870": "電資專班-不分系",
+
+      "A40": "智財所",
+      "A50": "文發系",
+      "AB0": "資財系",
+      "AC0": "互動系",
+      "AC1": "互動系-媒體設計組",
+      "AC2": "互動系-視覺傳達設計組",
+      "AD0": "通訊學程",
+      "AE0": "二技學士班",
+
+      "C01": "技優領航專班",
+      "C02": "智慧鐵道碩士學位學程",
+      "C52": "人工智慧科技碩士學位學程",
+      "C53": "資訊安全碩士學位學程",
+      "C71": "人工智慧科技學位學程",
+      "C72": "資訊安全學位學程",
+      "C73": "人工智慧科技碩士學位學程",
+      "C74": "人工智慧科技博士學位學程",
+      "C75": "資訊安全碩士學位學程",
+      "C77": "半導體科技碩士學位學程"
+
+    };
+
+    const state = {
+      student: null
+    };
+
+    const form = document.getElementById("certificateForm");
+    const studentIdInput = document.getElementById("studentId");
+    const queryStudentBtn = document.getElementById("queryStudentBtn");
+    const queryMessage = document.getElementById("queryMessage");
+    const autoInfo = document.getElementById("autoInfo");
+    const departmentText = document.getElementById("departmentText");
+    const classText = document.getElementById("classText");
+    const emailText = document.getElementById("emailText");
+    const licenseContainer = document.getElementById("licenseContainer");
+    const licenseTemplate = document.getElementById("licenseTemplate");
+    const addLicenseBtn = document.getElementById("addLicenseBtn");
+    const previewBtn = document.getElementById("previewBtn");
+    const previewBox = document.getElementById("previewBox");
+    const previewContent = document.getElementById("previewContent");
+
+    function showMessage(type, text) {
+      queryMessage.className = `message ${type}`;
+      queryMessage.textContent = text;
+      queryMessage.style.display = "block";
+    }
+
+    function clearMessage() {
+      queryMessage.style.display = "none";
+      queryMessage.textContent = "";
+    }
+
+    function normalizeStudentId(value) {
+      return String(value || "").trim().toUpperCase();
+    }
+
+    function buildEmail(studentId) {
+      return `t${studentId.toLowerCase()}@ntut.org.tw`;
+    }
+
+    async function queryStudent() {
+      clearMessage();
+      const studentId = normalizeStudentId(studentIdInput.value);
+      studentIdInput.value = studentId;
+
+      if (!studentId) {
+        showMessage("error", "請先輸入學號。");
+        return;
+      }
+
+      let result = null;
+
+      if (CONFIG.studentQueryApiUrl) {
+        const url = CONFIG.studentQueryApiUrl + "&studentId=" + encodeURIComponent(studentId);
+        const response = await fetch(url);
+        result = await response.json();
+      } else {
+        result = parseStudentId(studentId);
+      }
+
+      if (!result || result.success === false) {
+        state.student = null;
+        autoInfo.style.display = "none";
+        showMessage("error", "學號格式或系所組代碼無法判斷，請確認學號是否正確，或請聯絡承辦單位。")
+        return;
+      }
+
+      state.student = {
+        studentId,
+        admissionYear: result.admissionYear,
+        departmentCode: result.departmentCode,
+        serialNumber: result.serialNumber,
+        department: result.department,
+        className: result.className,
+        email: buildEmail(studentId)
+      };
+
+      departmentText.textContent = state.student.department;
+      classText.textContent = state.student.className;
+      emailText.textContent = state.student.email;
+      autoInfo.style.display = "grid";
+      showMessage("success", "已依學號解析學生資料；因學制無法完全由代碼判斷，請於基本資料選擇實際學制。")
+    }
+
+    function parseStudentId(studentId) {
+      if (!/^[0-9]{3}[A-Z0-9]{3}[0-9]{3}$/.test(studentId)) return null;
+
+      const admissionYear = Number(studentId.slice(0, 3));
+      const departmentCode = studentId.slice(3, 6);
+      const serialNumber = studentId.slice(6, 9);
+      const department = departmentCodeMap[departmentCode];
+
+      if (!department) return null;
+
+      // 目前以 114 學年度推算，之後可依活動年度調整。
+      const currentAcademicYear = 114;
+      const gradeNumber = currentAcademicYear - admissionYear + 1;
+      const gradeText = admissionYear + "學年度入學／" + convertGradeText(gradeNumber) + "（推估）";
+
+      return {
+        success: true,
+        admissionYear,
+        departmentCode,
+        serialNumber,
+        department,
+        className: gradeText
+      };
+    }
+
+    function convertGradeText(gradeNumber) {
+      const gradeMap = {
+        1: "一年級",
+        2: "二年級",
+        3: "三年級",
+        4: "四年級",
+        5: "五年級",
+        6: "六年級"
+      };
+
+      if (gradeNumber < 1) return "尚未入學或學號年度異常";
+      return gradeMap[gradeNumber] || String(gradeNumber) + "年級";
+    }
+
+    function addLicenseCard() {
+      const count = licenseContainer.querySelectorAll("[data-license-card]").length;
+      if (count >= CONFIG.maxLicenses) {
+        alert(`最多只能新增 ${CONFIG.maxLicenses} 張證照。`);
+        return;
+      }
+
+      const clone = licenseTemplate.content.cloneNode(true);
+      licenseContainer.appendChild(clone);
+      refreshLicenseCards();
+    }
+
+    function refreshLicenseCards() {
+      const cards = [...licenseContainer.querySelectorAll("[data-license-card]")];
+      cards.forEach((card, index) => {
+        card.querySelector("[data-license-index]").textContent = index + 1;
+        const removeBtn = card.querySelector("[data-remove-license]");
+        removeBtn.classList.toggle("hidden", cards.length === 1);
+      });
+    }
+
+    function getLicenseData() {
+      const cards = [...licenseContainer.querySelectorAll("[data-license-card]")];
+      return cards.map((card, index) => ({
+        index: index + 1,
+        licenseName: card.querySelector('[name="licenseName"]').value.trim(),
+        issuer: card.querySelector('[name="issuer"]').value.trim(),
+        region: card.querySelector('[name="region"]').value,
+        issueDate: card.querySelector('[name="issueDate"]').value,
+        file: card.querySelector('[name="licenseFile"]').files[0] || null,
+        note: card.querySelector('[name="note"]').value.trim()
+      }));
+    }
+
+    function validateDateRange(dateString) {
+      return dateString >= CONFIG.dateMin && dateString <= CONFIG.dateMax;
+    }
+
+    function validateForm(showAlert = true) {
+      if (!state.student) {
+        if (showAlert) alert("請先查詢學生資料。");
+        return false;
+      }
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return false;
+      }
+
+      const licenses = getLicenseData();
+      if (licenses.length === 0) {
+        if (showAlert) alert("請至少新增一張證照。");
+        return false;
+      }
+
+      for (const item of licenses) {
+        if (!validateDateRange(item.issueDate)) {
+          if (showAlert) alert(`證照 ${item.index} 的發照日期不在可認列期間內。`);
+          return false;
+        }
+      }
+
+      const duplicateKeys = new Set();
+      for (const item of licenses) {
+        const key = `${item.licenseName}-${item.issueDate}`;
+        if (duplicateKeys.has(key)) {
+          if (showAlert) alert(`證照 ${item.index} 可能重複登錄，請確認證照名稱與發照日期。`);
+          return false;
+        }
+        duplicateKeys.add(key);
+      }
+
+      return true;
+    }
+
+    function renderPreview() {
+      if (!validateForm(true)) return;
+
+      const licenses = getLicenseData();
+      const studentName = document.getElementById("studentName").value.trim();
+      const personalId = document.getElementById("personalId").value.trim();
+      const gender = document.getElementById("gender").value;
+      const educationLevel = document.getElementById("educationLevel").value;
+      const studentType = document.getElementById("studentType").value;
+      const isGraduating = document.getElementById("isGraduating").value;
+      const admissionType = document.getElementById("admissionType").value;
+
+      const licenseHtml = licenses.map(item => `
+        <div class="cert-preview-item">
+          <strong>${item.index}. ${escapeHtml(item.licenseName)}</strong><br>
+          發照單位：${escapeHtml(item.issuer)}<br>
+          發證地區：${escapeHtml(item.region)}｜發照日期：${escapeHtml(item.issueDate)}<br>
+          檔案：${escapeHtml(item.file ? item.file.name : "未選擇")}
+          ${item.note ? `<br>備註：${escapeHtml(item.note)}` : ""}
+        </div>
+      `).join("");
+
+      previewContent.innerHTML = `
+        <table class="summary-table">
+          <tr><th>學號</th><td>${escapeHtml(state.student.studentId)}</td></tr>
+          <tr><th>姓名</th><td>${escapeHtml(studentName)}</td></tr>
+          <tr><th>系所</th><td>${escapeHtml(state.student.department)}</td></tr>
+          <tr><th>班級</th><td>${escapeHtml(state.student.className)}</td></tr>
+          <tr><th>Email</th><td>${escapeHtml(state.student.email)}</td></tr>
+          <tr><th>身分證／居留證號</th><td>${escapeHtml(personalId)}</td></tr>
+          <tr><th>學制</th><td>${escapeHtml(educationLevel)}</td></tr>
+          <tr><th>性別</th><td>${escapeHtml(gender)}</td></tr>
+          <tr><th>身分別</th><td>${escapeHtml(studentType)}</td></tr>
+          <tr><th>應屆畢業生</th><td>${escapeHtml(isGraduating)}</td></tr>
+          <tr><th>入學管道</th><td>${escapeHtml(admissionType)}</td></tr>
+        </table>
+        <h4 style="margin: 8px 0 10px; color: var(--primary);">證照清單，共 ${licenses.length} 張</h4>
+        <div class="cert-list">${licenseHtml}</div>
+      `;
+      previewBox.style.display = "block";
+      previewBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function submitForm(event) {
+      event.preventDefault();
+
+      if (!validateForm(true)) return;
+
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "送出中...";
+
+      try {
+        const licenses = getLicenseData();
+
+        const licensePayloads = await Promise.all(
+          licenses.map(async item => ({
+            licenseName: item.licenseName,
+            issuer: item.issuer,
+            region: item.region,
+            issueDate: item.issueDate,
+            fileBase64: item.file ? await fileToBase64(item.file) : "",
+            fileType: item.file ? item.file.type : "",
+            fileName: item.file ? item.file.name : "",
+            note: item.note
+          }))
+        );
+
+        const payload = {
+          student: state.student,
+          basic: {
+            studentName: document.getElementById("studentName").value.trim(),
+            personalId: document.getElementById("personalId").value.trim(),
+            educationLevel: document.getElementById("educationLevel").value,
+            gender: document.getElementById("gender").value,
+            studentType: document.getElementById("studentType").value,
+            isGraduating: document.getElementById("isGraduating").value,
+            admissionType: document.getElementById("admissionType").value
+          },
+          licenses: licensePayloads
+        };
+
+        await fetch(CONFIG.submitApiUrl, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(payload)
+        });
+
+        alert(`已送出！確認信將寄至 ${state.student.email}`);
+        window.location.reload();
+
+      } catch (error) {
+        console.error(error);
+        alert("送出時發生錯誤：" + error.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "確認送出";
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    queryStudentBtn.addEventListener("click", queryStudent);
+    studentIdInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        queryStudent();
+      }
+    });
+
+    addLicenseBtn.addEventListener("click", addLicenseCard);
+    licenseContainer.addEventListener("click", event => {
+      const removeBtn = event.target.closest("[data-remove-license]");
+      if (!removeBtn) return;
+      removeBtn.closest("[data-license-card]").remove();
+      refreshLicenseCards();
+    });
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    previewBtn.addEventListener("click", renderPreview);
+    form.addEventListener("submit", submitForm);
+
+    addLicenseCard();
+  </script>
+</body>
+
+</html>
