@@ -1183,6 +1183,102 @@
 
     addLicenseCard();
   </script>
+
+  <script>
+(function () {
+  // 截止時間：2026/10/03 00:00 台灣時間
+  const CLOSE_TIME = new Date("2026-10-03T00:00:00+08:00");
+
+  function checkRegistrationStatus() {
+    const now = new Date();
+
+    if (now >= CLOSE_TIME) {
+      document.body.innerHTML = `
+        <div style="
+          min-height:100vh;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:24px;
+          background:linear-gradient(180deg,#eef4fb 0%,#f6f8fb 100%);
+          font-family:'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;
+          box-sizing:border-box;
+        ">
+          <div style="
+            width:100%;
+            max-width:620px;
+            background:#ffffff;
+            border:1px solid #d9e2ef;
+            border-radius:24px;
+            padding:48px 32px;
+            text-align:center;
+            box-shadow:0 12px 30px rgba(20,59,111,.08);
+          ">
+
+            <div style="
+              width:64px;
+              height:64px;
+              margin:0 auto 22px;
+              border-radius:50%;
+              background:#eaf1fb;
+              color:#143b6f;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              font-size:30px;
+              font-weight:bold;
+            ">
+              ✓
+            </div>
+
+            <h1 style="
+              margin:0 0 14px;
+              color:#143b6f;
+              font-size:30px;
+            ">
+              證照資料登錄已截止
+            </h1>
+
+            <p style="
+              margin:0;
+              color:#6b7280;
+              font-size:16px;
+              line-height:1.8;
+            ">
+              本次證照資料登錄期間已結束，<br>
+              系統目前已停止受理資料。
+            </p>
+
+            <div style="
+              margin-top:28px;
+              padding:16px;
+              background:#f8fafc;
+              border-radius:14px;
+              color:#47617f;
+              font-size:14px;
+              line-height:1.8;
+            ">
+              如有證照登錄相關問題，請洽<br>
+              國立臺北科技大學 研究發展處
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      return true;
+    }
+
+    return false;
+  }
+
+  // 開啟網頁時立即檢查
+  checkRegistrationStatus();
+
+  // 頁面若一直開著，每 10 秒重新檢查
+  setInterval(checkRegistrationStatus, 10000);
+})();
+</script>
 </body>
 
 </html>
